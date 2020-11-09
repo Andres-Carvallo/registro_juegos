@@ -11,6 +11,7 @@
       <th>Editar</th>
       <th>Imagen Producto</th>
       <th>Link reglas en PDF</th>
+      <th>Componentes</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -22,10 +23,16 @@
         <td><%= game.rule_text %></td>
         <td><%= link_to 'Show', game %></td>
         <td><%= link_to 'Edit', edit_game_path(game) %></td>
-       
-        <td><%= link_to (image_tag (rails_blob_url(game.box_image)), rails_blob_url(game.box_image), disposition: "attachment")  %></td>
-
-        <td><%= link_to rails_blob_path(game.rules_pdf) %></td>
+        <% if game.box_image.attached?%>
+          <td><%= link_to (image_tag (game.box_image.variant(monochrome: true, resize: "100x100").processed)), rails_blob_url(game.box_image), disposition: "attachment"  %></td>
+        <% end %>
+        <% if game.rules_pdf.attached?%>
+          <td> <%= link_to 'Reglas', rails_blob_url(game.rules_pdf), disposition: "attachment" %> </td>
+        <% end %>
+        <% game.components.each do |component|%>
+          <td> <%= link_to (image_tag component.variant(monochrome: true, resize: "100x100")), rails_blob_url(component), disposition: "attachment" %> </td>
+        <% end %>
+        <td></td> 
        
         <td><%= link_to 'Destroy', game, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
